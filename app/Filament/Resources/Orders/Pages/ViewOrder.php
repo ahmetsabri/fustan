@@ -5,6 +5,9 @@ namespace App\Filament\Resources\Orders\Pages;
 use App\Filament\Resources\Orders\OrderResource;
 use App\Filament\Resources\Orders\Schemas\OrderView;
 use App\Helpers\CurrencyHelper;
+use Omaralalwi\Gpdf\Facade\Gpdf;
+use Illuminate\Support\Facades\View;
+use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Schema;
@@ -18,6 +21,19 @@ class ViewOrder extends ViewRecord
     protected function getHeaderActions(): array
     {
         $actions = [];
+
+        // Download Invoice button
+        $actions[] = Action::make('downloadInvoice')
+            ->label('تحميل الفاتورة')
+            ->icon('heroicon-o-arrow-down-tray')
+            ->color('success')
+            ->action(function () {
+                $this->record->load(['customer', 'product', 'tailor', 'customerService']);
+                
+                $html = View::make('pdfs.invoice', ['order' => $this->record])->render();
+                
+                Gpdf::generateWithStream($html, 'invoice-' . $this->record->order_number . '.pdf', true);
+            });
 
         // Hide edit button for tailors
         $user = auth()->user();

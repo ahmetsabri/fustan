@@ -3,6 +3,9 @@
 namespace App\Filament\Resources\Orders\Tables;
 
 use App\Models\User;
+use PDF;
+
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -14,12 +17,15 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\HtmlString;
+use ArPHP\I18N\Arabic;
 
 class OrdersTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->with(['statusAudits.user']))
             ->columns([
                 TextColumn::make('order_number')
                     ->searchable()
@@ -49,11 +55,47 @@ class OrdersTable
                     ->selectablePlaceholder(false)
                     ->sortable()
                     ->toggleable()
-                   ,
+                    ->tooltip(function ($record) {
+                        $statusLabels = [
+                            'pending' => 'معلق',
+                            'in_progress' => 'قيد التنفيذ',
+                            'completed' => 'مكتمل',
+                            'delivered' => 'تم التسليم',
+                            'cancelled' => 'ملغي',
+                        ];
+                        
+                        $audits = $record->statusAudits->sortByDesc('created_at');
+                        
+                        if ($audits->isEmpty()) {
+                            return 'لا يوجد تاريخ للحالة';
+                        }
+                        
+                        $history = [];
+                        foreach ($audits->reverse() as $audit) {
+                            $statusLabel = $statusLabels[$audit->status] ?? $audit->status;
+                            $fromStatusLabel = $audit->from_status ? ($statusLabels[$audit->from_status] ?? $audit->from_status) : null;
+                            $userName = $audit->user?->name ?? 'غير معروف';
+                            $date = $audit->created_at->format('Y-m-d H:i');
+                            
+                            if ($fromStatusLabel) {
+                                $history[] = "{$fromStatusLabel} -> {$statusLabel} ({$userName}) - {$date}";
+                            } else {
+                                $history[] = "{$statusLabel} ({$userName}) - {$date}";
+                            }
+                        }
+                        
+                        return new HtmlString('تاريخ الحالة:' . '<br>' . implode('<br>', $history));
+                    }),
                 TextColumn::make('tailor.name')
                     ->label('الخياط')
                     ->sortable()
                     ->default('غير معين')
+                    ->toggleable(),
+                TextColumn::make('customerService.name')
+                    ->label('تم الإنشاء بواسطة')
+                    ->sortable()
+                    ->searchable()
+                    ->default('غير محدد')
                     ->toggleable(),
                 TextColumn::make('total_price')
                     ->label('السعر الإجمالي')
@@ -120,6 +162,30 @@ class OrdersTable
                     }),
             ])
             ->recordActions([
+                Action::make('downloadInvoice')
+                    ->label('تحميل الفاتورة')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->action(function ($record) {
+                        $reportHtml = view('pdfs.invoice', ['order' => $record])->render();
+        
+                        $arabic = new Arabic();
+                        $p = $arabic->arIdentify($reportHtml);
+                
+                        for ($i = count($p)-1; $i >= 0; $i-=2) {
+                            $utf8ar = $arabic->utf8Glyphs(substr($reportHtml, $p[$i-1], $p[$i] - $p[$i-1]));
+                            $reportHtml = substr_replace($reportHtml, $utf8ar, $p[$i-1], $p[$i] - $p[$i-1]);
+                        }
+                
+                        $pdf = PDF::loadHTML($reportHtml);
+                        return response()->streamDownload(function () use ($pdf) {
+                            echo $pdf->stream();
+                            }, 'invoice-' . $record->order_number . '.pdf');
+
+
+
+                        
+                    }),
                 EditAction::make(),
             ])
             ->recordUrl(fn ($record) => \App\Filament\Resources\Orders\OrderResource::getUrl('edit', ['record' => $record]))

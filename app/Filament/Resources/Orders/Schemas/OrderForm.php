@@ -79,7 +79,7 @@ class OrderForm
                     ->relationship('product', 'name', fn (Builder $query) => $query->where('is_active', true)->orderBy('name'))
                     ->searchable()
                     ->preload()
-                    ->nullable()
+                    ->required()
                     ->disabled($shouldDisable)
                     ->live()
                     ->afterStateUpdated(fn ($state, $set) => $set('product_images', null)),

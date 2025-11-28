@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
             'phone' => '+1234567890',
             'is_active' => true,
         ]);
-        return;
+
         // Create Customer Service Users
         $cs1 = User::create([
             'name' => 'Customer Service 1',
