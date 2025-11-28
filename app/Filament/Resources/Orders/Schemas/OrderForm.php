@@ -155,13 +155,13 @@ class OrderForm
                             ->relationship('tailor', 'name', fn (Builder $query) => $query->where('role', 'tailor')->where('is_active', true)->orderBy('name'))
                             ->searchable()
                             ->preload()
-                            ->nullable()
+                            ->required()
                             ->disabled($shouldDisable)
                             ->rules([
                                 function () {
                                     return function (string $attribute, $value, \Closure $fail) {
                                         if ($value) {
-                                            $user = \App\Models\User::find($value);
+                                            $user = User::find($value);
                                             if (!$user || $user->role !== 'tailor') {
                                                 $fail('يجب أن يكون الخياط المحدد لديه دور الخياط.');
                                             }
