@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Orders\Pages;
 use App\Filament\Resources\Orders\OrderResource;
 use App\Filament\Resources\Orders\Schemas\OrderView;
 use App\Helpers\CurrencyHelper;
+use ArPHP\I18N\Arabic;
 use Omaralalwi\Gpdf\Facade\Gpdf;
 use Illuminate\Support\Facades\View;
 use Filament\Actions\Action;
@@ -31,6 +32,15 @@ class ViewOrder extends ViewRecord
                 $this->record->load(['customer', 'product.media', 'tailor', 'customerService']);
                 
                 $html = View::make('pdfs.invoice', ['order' => $this->record])->render();
+                
+                // Process Arabic text for proper rendering
+                $arabic = new Arabic();
+                $p = $arabic->arIdentify($html);
+                
+                for ($i = count($p) - 1; $i >= 0; $i -= 2) {
+                    $utf8ar = $arabic->utf8Glyphs(substr($html, $p[$i - 1], $p[$i] - $p[$i - 1]));
+                    $html = substr_replace($html, $utf8ar, $p[$i - 1], $p[$i] - $p[$i - 1]);
+                }
                 
                 Gpdf::generateWithStream($html, 'invoice-' . $this->record->order_number . '.pdf', true);
             });

@@ -1,11 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" dir="ltr">
 	<head>
 		<meta charset="utf-8" />
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<title>Invoice - {{ $order->order_number }}</title>
 
 		<style>
+			@charset "UTF-8";
+			
+			* {
+				font-family: 'DejaVu Sans', 'Tahoma', 'Arial Unicode MS', 'Arial', sans-serif;
+			}
+			
 			.invoice-box {
 				max-width: 800px;
 				margin: auto;
@@ -14,7 +20,7 @@
 				box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 				font-size: 16px;
 				line-height: 24px;
-				font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+				font-family: 'DejaVu Sans', 'Tahoma', 'Arial Unicode MS', 'Arial', sans-serif;
 				color: #555;
 			}
 
