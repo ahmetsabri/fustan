@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Customers;
 use App\Filament\Resources\Customers\Pages\ManageCustomers;
 use App\Filament\Resources\Customers\Schemas\CustomerForm;
 use App\Filament\Resources\Customers\Tables\CustomersTable;
+use App\Helpers\TranslationHelper;
 use App\Models\Customer;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -18,11 +19,20 @@ class CustomerResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
-    protected static ?string $navigationLabel = 'العملاء';
+    public static function getNavigationLabel(): string
+    {
+        return TranslationHelper::label('العملاء', 'Customers');
+    }
 
-    protected static ?string $modelLabel = 'عميل';
+    public static function getModelLabel(): string
+    {
+        return TranslationHelper::label('عميل', 'Customer');
+    }
 
-    protected static ?string $pluralModelLabel = 'العملاء';
+    public static function getPluralModelLabel(): string
+    {
+        return TranslationHelper::label('العملاء', 'Customers');
+    }
 
     public static function form(Schema $schema): Schema
     {

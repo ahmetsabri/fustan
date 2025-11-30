@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Users;
 use App\Filament\Resources\Users\Pages\ManageUsers;
 use App\Filament\Resources\Users\Schemas\UserForm;
 use App\Filament\Resources\Users\Tables\UsersTable;
+use App\Helpers\TranslationHelper;
 use App\Models\User;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -18,11 +19,20 @@ class UserResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
-    protected static ?string $navigationLabel = 'المستخدمون';
+    public static function getNavigationLabel(): string
+    {
+        return TranslationHelper::label('المستخدمون', 'Users');
+    }
 
-    protected static ?string $modelLabel = 'مستخدم';
+    public static function getModelLabel(): string
+    {
+        return TranslationHelper::label('مستخدم', 'User');
+    }
 
-    protected static ?string $pluralModelLabel = 'المستخدمون';
+    public static function getPluralModelLabel(): string
+    {
+        return TranslationHelper::label('المستخدمون', 'Users');
+    }
 
     public static function canViewAny(): bool
     {

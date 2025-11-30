@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Orders\Schemas;
 
 use App\Helpers\CurrencyHelper;
+use App\Helpers\TranslationHelper;
 use Filament\Forms\Components\DatePicker;
 use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\Select;
@@ -19,18 +20,18 @@ class OrderView
             ->components([
                 // Order Number
                 TextInput::make('order_number')
-                    ->label('رقم الطلب')
+                    ->label(TranslationHelper::label('رقم الطلب', 'Order Number'))
                     ->disabled(),
 
                 // Customer Section
                 TextInput::make('customer_name')
-                    ->label('العميل')
+                    ->label(TranslationHelper::label('العميل', 'Customer'))
                     ->disabled()
                     ->dehydrated(false),
 
                 // Product Section
                 TextInput::make('product_name')
-                    ->label('المنتج')
+                    ->label(TranslationHelper::label('المنتج', 'Product'))
                     ->disabled()
                     ->dehydrated(false),
 
@@ -38,33 +39,33 @@ class OrderView
                 Grid::make(3)
                     ->schema([
                         TextInput::make('length')
-                            ->label('الطول')
+                            ->label(TranslationHelper::label('الطول', 'Length'))
                             ->suffix('cm')
                             ->disabled(),
                         TextInput::make('shoulder')
-                            ->label('الكتف')
+                            ->label(TranslationHelper::label('الكتف', 'Shoulder'))
                             ->suffix('cm')
                             ->disabled(),
                         TextInput::make('chest')
-                            ->label('الصدر')
+                            ->label(TranslationHelper::label('الصدر', 'Chest'))
                             ->suffix('cm')
                             ->disabled(),
                         TextInput::make('waist')
-                            ->label('الخصر')
+                            ->label(TranslationHelper::label('الخصر', 'Waist'))
                             ->suffix('cm')
                             ->disabled(),
                         TextInput::make('hip')
-                            ->label('الورك')
+                            ->label(TranslationHelper::label('الورك', 'Hip'))
                             ->suffix('cm')
                             ->disabled(),
                         TextInput::make('sleeve')
-                            ->label('الكُم')
+                            ->label(TranslationHelper::label('الكُم', 'Sleeve'))
                             ->suffix('cm')
                             ->disabled(),
                     ]),
 
                 Textarea::make('measurement_notes')
-                    ->label('ملاحظات_المقاسات')
+                    ->label(TranslationHelper::label('ملاحظات المقاسات', 'Measurement Notes'))
                     ->rows(3)
                     ->columnSpanFull()
                     ->disabled(),
@@ -73,29 +74,29 @@ class OrderView
                 Grid::make(2)
                     ->schema([
                         TextInput::make('tailor_name')
-                            ->label('الخياط')
+                            ->label(TranslationHelper::label('الخياط', 'Tailor'))
                             ->disabled()
                             ->dehydrated(false),
                         TextInput::make('status_display')
-                            ->label('الحالة')
+                            ->label(TranslationHelper::label('الحالة', 'Status'))
                             ->disabled()
                             ->dehydrated(false),
                         TextInput::make('total_price_display')
-                            ->label('السعر الإجمالي')
+                            ->label(TranslationHelper::label('السعر الإجمالي', 'Total Price'))
                             ->disabled()
                             ->dehydrated(false),
                         TextInput::make('currency_display')
-                            ->label('العملة')
+                            ->label(TranslationHelper::label('العملة', 'Currency'))
                             ->disabled()
                             ->dehydrated(false),
                         DatePicker::make('delivery_date')
-                            ->label('تاريخ التسليم')
+                            ->label(TranslationHelper::label('تاريخ التسليم', 'Delivery Date'))
                             ->disabled()
                             ->nullable(),
                     ]),
 
                 Textarea::make('notes')
-                    ->label('ملاحظات')
+                    ->label(TranslationHelper::label('ملاحظات', 'Notes'))
                     ->rows(3)
                     ->columnSpanFull()
                     ->disabled(),
@@ -110,7 +111,7 @@ class OrderView
                     ->disabled()
                     ->dehydrated(false)
                     ->columnSpanFull()
-                    ->label('مرفقات الطلب'),
+                    ->label(TranslationHelper::label('مرفقات الطلب', 'Order Attachments')),
             ]);
     }
 }

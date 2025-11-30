@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Helpers\TranslationHelper;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -15,29 +16,29 @@ class UserForm
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->label('الاسم')
+                    ->label(TranslationHelper::label('الاسم', 'Name'))
                     ->required()
                     ->maxLength(255),
                 TextInput::make('email')
-                    ->label('البريد الإلكتروني')
+                    ->label(TranslationHelper::label('البريد الإلكتروني', 'Email'))
                     ->email()
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(255),
                 TextInput::make('phone')
-                    ->label('الهاتف')
+                    ->label(TranslationHelper::label('الهاتف', 'Phone'))
                     ->maxLength(255),
                 Select::make('role')
-                    ->label('الدور')
-                    ->options([
-                        'admin' => 'مدير',
-                        'customer_service' => 'خدمة العملاء',
-                        'tailor' => 'خياط',
-                    ])
+                    ->label(TranslationHelper::label('الدور', 'Role'))
+                    ->options(TranslationHelper::options([
+                        'admin' => ['ar' => 'مدير', 'en' => 'Admin'],
+                        'customer_service' => ['ar' => 'خدمة العملاء', 'en' => 'Customer Service'],
+                        'tailor' => ['ar' => 'خياط', 'en' => 'Tailor'],
+                    ]))
                     ->required()
                     ->default('customer_service'),
                 TextInput::make('password')
-                    ->label('كلمة المرور')
+                    ->label(TranslationHelper::label('كلمة المرور', 'Password'))
                     ->password()
                     ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                     ->dehydrated(fn ($state) => filled($state))
@@ -46,7 +47,7 @@ class UserForm
                     ->columnSpanFull(),
                 Toggle::make('is_active')
                     ->default(true)
-                    ->label('نشط')
+                    ->label(TranslationHelper::label('نشط', 'Active'))
                     ->columnSpanFull(),
             ]);
     }

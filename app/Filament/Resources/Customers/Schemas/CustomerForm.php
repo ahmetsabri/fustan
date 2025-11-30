@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Customers\Schemas;
 
+use App\Helpers\TranslationHelper;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -13,25 +14,25 @@ class CustomerForm
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->label('الاسم')
+                    ->label(TranslationHelper::label('الاسم', 'Name'))
                     ->required()
                     ->maxLength(255),
                 TextInput::make('phone')
-                    ->label('الهاتف')
+                    ->label(TranslationHelper::label('الهاتف', 'Phone'))
                     ->tel()
                     ->required()
                     ->maxLength(255),
                 TextInput::make('email')
                 ->columnSpanFull()
-                    ->label('البريد الإلكتروني')
+                    ->label(TranslationHelper::label('البريد الإلكتروني', 'Email'))
                     ->email()
                     ->maxLength(255),
                 Textarea::make('address')
-                    ->label('العنوان')
+                    ->label(TranslationHelper::label('العنوان', 'Address'))
                     ->rows(3)
                     ->columnSpanFull(),
                 Textarea::make('notes')
-                    ->label('ملاحظات')
+                    ->label(TranslationHelper::label('ملاحظات', 'Notes'))
                     ->rows(3)
                     ->columnSpanFull(),
             ]);

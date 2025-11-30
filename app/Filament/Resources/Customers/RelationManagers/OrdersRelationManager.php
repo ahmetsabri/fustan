@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Customers\RelationManagers;
 
+use App\Helpers\TranslationHelper;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -20,7 +21,10 @@ class OrdersRelationManager extends RelationManager
 {
     protected static string $relationship = 'orders';
 
-    protected static ?string $title = 'الطلبات';
+    public static function getTitle(\Illuminate\Database\Eloquent\Model $ownerRecord, string $pageClass): string
+    {
+        return TranslationHelper::label('الطلبات', 'Orders');
+    }
 
     public function form(Schema $schema): Schema
     {
@@ -47,16 +51,16 @@ class OrdersRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('order_number')
                     ->searchable()
-                    ->label('رقم الطلب'),
+                    ->label(TranslationHelper::label('رقم الطلب', 'Order Number')),
                 TextColumn::make('status')
-                    ->label('الحالة')
+                    ->label(TranslationHelper::label('الحالة', 'Status'))
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'pending' => 'معلق',
-                        'in_progress' => 'قيد التنفيذ',
-                        'completed' => 'مكتمل',
-                        'delivered' => 'تم التسليم',
-                        'cancelled' => 'ملغي',
+                        'pending' => TranslationHelper::label('معلق', 'Pending'),
+                        'in_progress' => TranslationHelper::label('قيد التنفيذ', 'In Progress'),
+                        'completed' => TranslationHelper::label('مكتمل', 'Completed'),
+                        'delivered' => TranslationHelper::label('تم التسليم', 'Delivered'),
+                        'cancelled' => TranslationHelper::label('ملغي', 'Cancelled'),
                         default => $state,
                     })
                     ->color(fn (string $state): string => match ($state) {
@@ -76,13 +80,13 @@ class OrdersRelationManager extends RelationManager
                         default => 'heroicon-o-question-mark-circle',
                     }),
                 TextColumn::make('total_price')
-                    ->label('السعر الإجمالي')
+                    ->label(TranslationHelper::label('السعر الإجمالي', 'Total Price'))
                     ->money(fn ($record) => $record->currency ?? 'KWD'),
                 TextColumn::make('delivery_date')
-                    ->label('تاريخ التسليم')
+                    ->label(TranslationHelper::label('تاريخ التسليم', 'Delivery Date'))
                     ->date(),
                 TextColumn::make('created_at')
-                    ->label('تاريخ الإنشاء')
+                    ->label(TranslationHelper::label('تاريخ الإنشاء', 'Created At'))
                     ->dateTime(),
             ])
             ->filters([

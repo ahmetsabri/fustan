@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Orders\Schemas;
 
 use App\Helpers\CurrencyHelper;
+use App\Helpers\TranslationHelper;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\User;
@@ -32,7 +33,7 @@ class OrderForm
             ->components([
                 // Customer Section
                 Select::make('customer_id')
-                    ->label('العميل')
+                    ->label(TranslationHelper::label('العميل', 'Customer'))
                     ->relationship('customer', 'name', fn (Builder $query) => $query->orderBy('name'))
                     ->searchable()
                     ->getSearchResultsUsing(fn (string $search): array => 
@@ -50,23 +51,23 @@ class OrderForm
                     ->disabled($shouldDisable)
                     ->createOptionForm([
                         TextInput::make('name')
-                            ->label('الاسم')
+                            ->label(TranslationHelper::label('الاسم', 'Name'))
                             ->required()
                             ->maxLength(255),
                         TextInput::make('phone')
-                            ->label('الهاتف')
+                            ->label(TranslationHelper::label('الهاتف', 'Phone'))
                             ->tel()
                             ->required()
                             ->maxLength(255),
                         TextInput::make('email')
-                            ->label('البريد الإلكتروني')
+                            ->label(TranslationHelper::label('البريد الإلكتروني', 'Email'))
                             ->email()
                             ->maxLength(255),
                         Textarea::make('address')
-                            ->label('العنوان')
+                            ->label(TranslationHelper::label('العنوان', 'Address'))
                             ->rows(2),
                         Textarea::make('notes')
-                            ->label('ملاحظات')
+                            ->label(TranslationHelper::label('ملاحظات', 'Notes'))
                             ->rows(2),
                     ])
                     ->createOptionUsing(function (array $data): int {
@@ -75,7 +76,7 @@ class OrderForm
 
                 // Product Section
                 Select::make('product_id')
-                    ->label('المنتج')
+                    ->label(TranslationHelper::label('المنتج', 'Product'))
                     ->relationship('product', 'name', fn (Builder $query) => $query->where('is_active', true)->orderBy('name'))
                     ->searchable()
                     ->preload()
@@ -86,7 +87,7 @@ class OrderForm
 
                 // Product Images Display (for tailors only)
                 ViewField::make('product_images')
-                    ->label('صور المنتج')
+                    ->label(TranslationHelper::label('صور المنتج', 'Product Images'))
                     ->view('filament.forms.components.product-images')
                     ->visible(function ($get) {
                         $user = Auth::user();
@@ -109,39 +110,39 @@ class OrderForm
                 ->columnSpanFull()
                     ->schema([
                         TextInput::make('length')
-                            ->label('الطول')
+                            ->label(TranslationHelper::label('الطول', 'Length'))
                             ->suffix('cm')
                             ->rules(['nullable', 'regex:/^\d+(\.\d+)?$/'])
                             ->disabled($shouldDisable),
                         TextInput::make('shoulder')
-                            ->label('الكتف')
+                            ->label(TranslationHelper::label('الكتف', 'Shoulder'))
                             ->suffix('cm')
                             ->rules(['nullable', 'regex:/^\d+(\.\d+)?$/'])
                             ->disabled($shouldDisable),
                         TextInput::make('chest')
-                            ->label('الصدر')
+                            ->label(TranslationHelper::label('الصدر', 'Chest'))
                             ->suffix('cm')
                             ->rules(['nullable', 'regex:/^\d+(\.\d+)?$/'])
                             ->disabled($shouldDisable),
                         TextInput::make('waist')
-                            ->label('الخصر')
+                            ->label(TranslationHelper::label('الخصر', 'Waist'))
                             ->suffix('cm')
                             ->rules(['nullable', 'regex:/^\d+(\.\d+)?$/'])
                             ->disabled($shouldDisable),
                         TextInput::make('hip')
-                            ->label('الورك')
+                            ->label(TranslationHelper::label('الورك', 'Hip'))
                             ->suffix('cm')
                             ->rules(['nullable', 'regex:/^\d+(\.\d+)?$/'])
                             ->disabled($shouldDisable),
                         TextInput::make('sleeve')
-                            ->label('الكُم')
+                            ->label(TranslationHelper::label('الكُم', 'Sleeve'))
                             ->suffix('cm')
                             ->rules(['nullable', 'regex:/^\d+(\.\d+)?$/'])
                             ->disabled($shouldDisable),
                     ]),
 
                 Textarea::make('measurement_notes')
-                    ->label('ملاحظات_المقاسات')
+                    ->label(TranslationHelper::label('ملاحظات المقاسات', 'Measurement Notes'))
                     ->rows(3)
                     ->columnSpanFull()
                     ->disabled($shouldDisable),
@@ -151,7 +152,7 @@ class OrderForm
                 ->columnSpanFull()
                     ->schema([
                         Select::make('tailor_id')
-                            ->label('الخياط')
+                            ->label(TranslationHelper::label('الخياط', 'Tailor'))
                             ->relationship('tailor', 'name', fn (Builder $query) => $query->where('role', 'tailor')->where('is_active', true)->orderBy('name'))
                             ->searchable()
                             ->preload()
@@ -163,31 +164,31 @@ class OrderForm
                                         if ($value) {
                                             $user = User::find($value);
                                             if (!$user || $user->role !== 'tailor') {
-                                                $fail('يجب أن يكون الخياط المحدد لديه دور الخياط.');
+                                                $fail(TranslationHelper::label('يجب أن يكون الخياط المحدد لديه دور الخياط.', 'The selected tailor must have the tailor role.'));
                                             }
                                         }
                                     };
                                 },
                             ]),
                         Select::make('status')
-                            ->label('الحالة')
-                            ->options([
-                                'pending' => 'معلق',
-                                'in_progress' => 'قيد التنفيذ',
-                                'completed' => 'مكتمل',
-                                'delivered' => 'تم التسليم',
-                                'cancelled' => 'ملغي',
-                            ])
+                            ->label(TranslationHelper::label('الحالة', 'Status'))
+                            ->options(TranslationHelper::options([
+                                'pending' => ['ar' => 'معلق', 'en' => 'Pending'],
+                                'in_progress' => ['ar' => 'قيد التنفيذ', 'en' => 'In Progress'],
+                                'completed' => ['ar' => 'مكتمل', 'en' => 'Completed'],
+                                'delivered' => ['ar' => 'تم التسليم', 'en' => 'Delivered'],
+                                'cancelled' => ['ar' => 'ملغي', 'en' => 'Cancelled'],
+                            ]))
                             ->required()
                             ->default('pending'),
                         TextInput::make('total_price')
-                            ->label('السعر الإجمالي')
+                            ->label(TranslationHelper::label('السعر الإجمالي', 'Total Price'))
                             ->numeric()
                             ->required()
                             ->step(0.01)
                             ->disabled($shouldDisable),
                         Select::make('currency')
-                            ->label('العملة')
+                            ->label(TranslationHelper::label('العملة', 'Currency'))
                             ->options(CurrencyHelper::getCurrencies())
                             ->required()
                             ->default(CurrencyHelper::getDefaultCurrency())
@@ -195,13 +196,13 @@ class OrderForm
                             ->disabled($shouldDisable),
                         DatePicker::make('delivery_date')
                         ->columnSpanFull()
-                            ->label('تاريخ التسليم')
+                            ->label(TranslationHelper::label('تاريخ التسليم', 'Delivery Date'))
                             ->nullable()
                             ->disabled($shouldDisable),
                     ]),
 
                 Textarea::make('notes')
-                    ->label('ملاحظات')
+                    ->label(TranslationHelper::label('ملاحظات', 'Notes'))
                     ->rows(3)
                     ->columnSpanFull()
                     ->disabled($shouldDisable),
@@ -215,7 +216,7 @@ class OrderForm
                     ->reorderable()
                     ->downloadable()
                     ->openable()
-                    ->label('مرفقات الطلب')
+                    ->label(TranslationHelper::label('مرفقات الطلب', 'Order Attachments'))
                     ->columnSpanFull()
                     ->disabled($shouldDisable),
             ]);

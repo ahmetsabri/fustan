@@ -7,6 +7,7 @@ use App\Filament\Resources\Products\Pages\EditProduct;
 use App\Filament\Resources\Products\Pages\ListProducts;
 use App\Filament\Resources\Products\Schemas\ProductForm;
 use App\Filament\Resources\Products\Tables\ProductsTable;
+use App\Helpers\TranslationHelper;
 use App\Models\Product;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -20,11 +21,20 @@ class ProductResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCube;
 
-    protected static ?string $navigationLabel = 'المنتجات';
+    public static function getNavigationLabel(): string
+    {
+        return TranslationHelper::label('المنتجات', 'Products');
+    }
 
-    protected static ?string $modelLabel = 'منتج';
+    public static function getModelLabel(): string
+    {
+        return TranslationHelper::label('منتج', 'Product');
+    }
 
-    protected static ?string $pluralModelLabel = 'المنتجات';
+    public static function getPluralModelLabel(): string
+    {
+        return TranslationHelper::label('المنتجات', 'Products');
+    }
 
     public static function canViewAny(): bool
     {

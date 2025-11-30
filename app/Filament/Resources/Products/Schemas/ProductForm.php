@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Products\Schemas;
 
 use App\Helpers\CurrencyHelper;
+use App\Helpers\TranslationHelper;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
@@ -18,24 +19,24 @@ class ProductForm
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->label('الاسم')
+                    ->label(TranslationHelper::label('الاسم', 'Name'))
                     ->required()
                     ->columnSpanFull()
                     ->maxLength(255),
                 Textarea::make('description')
-                    ->label('الوصف')
+                    ->label(TranslationHelper::label('الوصف', 'Description'))
                     ->rows(3)
                     ->columnSpanFull(),
                 Grid::make(2)
                     ->columnSpanFull()
                     ->schema([
                         TextInput::make('price')
-                            ->label('السعر')
+                            ->label(TranslationHelper::label('السعر', 'Price'))
                             ->numeric()
                             ->required()
                             ->step(0.01),
                         Select::make('currency')
-                            ->label('العملة')
+                            ->label(TranslationHelper::label('العملة', 'Currency'))
                             ->options(CurrencyHelper::getCurrencies())
                             ->required()
                             ->default(CurrencyHelper::getDefaultCurrency())
@@ -50,10 +51,10 @@ class ProductForm
                     ->downloadable()
                     ->openable()
                     ->columnSpanFull()
-                    ->label('صور المنتج'),
+                    ->label(TranslationHelper::label('صور المنتج', 'Product Images')),
                 Toggle::make('is_active')
                     ->default(true)
-                    ->label('نشط')
+                    ->label(TranslationHelper::label('نشط', 'Active'))
                     ->columnSpanFull(),
             ]);
     }

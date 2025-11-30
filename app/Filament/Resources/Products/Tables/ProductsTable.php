@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Products\Tables;
 
+use App\Helpers\TranslationHelper;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -20,40 +21,40 @@ class ProductsTable
             ->columns([
                 SpatieMediaLibraryImageColumn::make('primary_image')
                     ->collection('images')
-                    ->label('الصورة')
+                    ->label(TranslationHelper::label('الصورة', 'Image'))
                     ->size( 60)
                     ->extraAttributes(['class' => 'rounded-lg']),
                 TextColumn::make('name')
-                    ->label('الاسم')
+                    ->label(TranslationHelper::label('الاسم', 'Name'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('price')
-                    ->label('السعر')
+                    ->label(TranslationHelper::label('السعر', 'Price'))
                     ->money(fn ($record) => $record->currency ?? 'KWD')
                     ->sortable()
                     ->color('success')
                     ->weight('bold'),
                 IconColumn::make('is_active')
                     ->boolean()
-                    ->label('نشط')
+                    ->label(TranslationHelper::label('نشط', 'Active'))
                     ->trueColor('success')
                     ->falseColor('danger')
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
                     ->sortable(),
                 TextColumn::make('created_at')
-                    ->label('تاريخ الإنشاء')
+                    ->label(TranslationHelper::label('تاريخ الإنشاء', 'Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('is_active')
-                    ->label('نشط')
-                    ->options([
-                        1 => 'نشط',
-                        0 => 'غير نشط',
-                    ]),
+                    ->label(TranslationHelper::label('نشط', 'Active'))
+                    ->options(TranslationHelper::options([
+                        1 => ['ar' => 'نشط', 'en' => 'Active'],
+                        0 => ['ar' => 'غير نشط', 'en' => 'Inactive'],
+                    ])),
             ])
             ->recordActions([
                 EditAction::make(),

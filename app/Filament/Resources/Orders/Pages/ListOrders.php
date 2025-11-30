@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Orders\Pages;
 
 use App\Filament\Resources\Orders\OrderResource;
+use App\Helpers\TranslationHelper;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,7 +12,10 @@ class ListOrders extends ListRecords
 {
     protected static string $resource = OrderResource::class;
 
-    protected static ?string $title = 'قائمة الطلبات';
+    public function getTitle(): string
+    {
+        return TranslationHelper::label('قائمة الطلبات', 'Orders List');
+    }
 
     protected function getHeaderActions(): array
     {

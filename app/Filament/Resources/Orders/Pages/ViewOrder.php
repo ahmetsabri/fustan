@@ -28,7 +28,7 @@ class ViewOrder extends ViewRecord
             ->icon('heroicon-o-arrow-down-tray')
             ->color('success')
             ->action(function () {
-                $this->record->load(['customer', 'product', 'tailor', 'customerService']);
+                $this->record->load(['customer', 'product.media', 'tailor', 'customerService']);
                 
                 $html = View::make('pdfs.invoice', ['order' => $this->record])->render();
                 

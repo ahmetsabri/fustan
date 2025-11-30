@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Users\Pages;
 
 use App\Filament\Resources\Users\UserResource;
+use App\Helpers\TranslationHelper;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
@@ -10,7 +11,10 @@ class EditUser extends EditRecord
 {
     protected static string $resource = UserResource::class;
 
-    protected static ?string $title = 'تعديل مستخدم';
+    public function getTitle(): string
+    {
+        return TranslationHelper::label('تعديل مستخدم', 'Edit User');
+    }
 
     protected function getHeaderActions(): array
     {
